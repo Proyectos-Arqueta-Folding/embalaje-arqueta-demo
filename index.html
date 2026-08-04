@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Embalaje · Arqueta Folding</title>
+  <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAC6UlEQVR4nO2aoW4bQRCGJ1WkwDAbJaygjkzyApUVaOLCQKMyB/UpilIWFGhYk8Lq1BcoqeJWCqtJa9gXcMGvrFa3u7Mzu3M+R8qHknPi/N8/e749O0e73Y6eM6/6DlDLi0DfdC5w1zx2+vxH3Z3E337+JaJff/7h2/eT1138lU4EEB04AWCuYSzgRwctAWCoYSYQRgdRAWCiYSCQig4YAVCpUSXARwdZAVCsUf4yKkkvZHh6svr+u+x3Syagii6ZwPD0xH09uzxXhdEJFLSeFfDTO+QaUoHiBVMmACQaeYHKtc4LMOkdvAYnYHKaMgKS9I6URlzA8BXGSgCEGr1NQJs+NYHj6NGLmxURPdzOyHQaZSD6u49fiejzh6vWo3EB0J2GsH4/egpOADiNPY9idnnORwd5AXBxs7IaRbZ+SfEOqQAZrSg+vSo6UAiA7k4M4ZppoRagp/RE9PbNUOWQqr+geIdOANHPru/dkc1yThWjqIkOFAIPtzM/OsARiUar/vroQCQQFt/CaaQcwvT10UFeIFp8lLPr++worIp3cALZ4kOiKwr1m0cH3GZOFT0EGnfNI27YTaJL90KV0f0n2Szn5q37lFwHemEyGiym4/D4MxCYjAbMowf9+cBkNHDpF9Pxpy8/wp85XAG+eMchLqEweqp+OjSBaOtMeqpcQnilN8Ff7irKBZC+3oGPztdPxQJ+7mKH4tZ9+jkHhLmz9VPZBMLKVUMwTE8FAn7W8NaMx2TNtNAJhOmFDtrowvppP1di89Z9FAKpxZMdQrPeqjLJ66eUwGY5b0VJpQ+PmDiELKbj6HY6/wlN/X2Zf0OTXU5h/dHcjvx1AI2a3KPR0yhSGq30fHQgvZCZa/CjkEQHuiuxoUY4CtQvjw4Kr8RW+9DWya1NT/W70Xqa9bZZbwuig6rNnMmKCt/qUWGwGy3WqIwOzLbTKg2T6MD4fiCrYRgddHJDE9Uwjw46/LfL/XC4b2wJeRHom/9OwZ2R/Ev40AAAAABJRU5ErkJggg==" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   Embalaje Arqueta Folding — sistema de diseño de marca.
+   Paleta "kraft / paper", tipografías Fraunces + Inter + JetBrains
+   Mono, tomadas del portal de Arqueta para que todo se vea de la
+   misma familia. La estrella visual es el camión dinámico (abajo).
+   ============================================================ */
+
+:root {
+  --ink: #1A2744;
+  --ink-soft: #2E4163;
+  --paper: #F5F7FA;
+  --paper-raised: #FFFFFF;
+  --card: #FFFFFF;
+  --line: #D8E0EA;
+  --kraft: #2B5D9B;
+  --kraft-soft: #D6E4F0;
+  --teal: #2F6F62;
+  --teal-soft: #DCE9E4;
+  --brick: #A63A3A;
+  --brick-soft: #F1DCDA;
+  --gold: #C08A3E;
+  --muted: #6B7A8D;
+  --empty-pallet: #E8EDF3;
+  --radius: 6px;
+  --shadow: 0 1px 2px rgba(26, 39, 68, 0.06), 0 4px 14px rgba(26, 39, 68, 0.06);
+  --shadow-lg: 0 6px 28px rgba(26, 39, 68, 0.14);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+h1, h2, h3, .display {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+  color: var(--ink);
+}
+h2 { font-size: 22px; }
+h3 { font-size: 15px; }
+
+.mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+.muted { color: var(--muted); }
+::selection { background: var(--kraft-soft); }
+
+/* ---------- botones ---------- */
+
+button, .btn {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 10px 18px;
+  background: var(--kraft);
+  color: #fff;
+  transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease;
+}
+button:hover, .btn:hover { background: var(--ink); }
+button:active, .btn:active { transform: scale(0.98); }
+button.secondary {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+button.secondary:hover { background: var(--paper); border-color: var(--kraft); color: var(--kraft); }
+button.ghost {
+  background: transparent; border: none; color: var(--muted);
+  font-weight: 500; padding: 6px 8px;
+}
+button.ghost:hover { color: var(--brick); background: transparent; }
+button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+input, select, textarea {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  padding: 0.6em 0.7em;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--kraft);
+  box-shadow: 0 0 0 3px var(--kraft-soft);
+}
+
+label {
+  display: flex; flex-direction: column; gap: 0.35em;
+  font-size: 12px; font-weight: 600; color: var(--ink-soft);
+}
+
+/* ---------- login ---------- */
+
+.login-body {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 500px at 20% -10%, var(--kraft-soft), transparent 60%),
+    var(--paper);
+}
+.login-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 2.6em;
+  width: 340px;
+  display: flex; flex-direction: column; gap: 1em;
+}
+.login-card .brand-lockup {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 0.5em;
+}
+.login-card .brand-lockup img { width: 42px; height: 42px; border-radius: 8px; }
+.login-card .brand-lockup .t1 { font-family: "Fraunces", serif; font-weight: 700; font-size: 18px; line-height: 1; }
+.login-card .brand-lockup .t2 { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+.error { color: var(--brick); font-size: 0.9em; margin: 0; }
+
+/* ---------- shell ---------- */
+
+.shell { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+
+.sidebar {
+  background: var(--ink);
+  color: #EDEAE0;
+  padding: 22px 14px;
+  position: sticky; top: 0; height: 100vh;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.sidebar .brand {
+  display: flex; align-items: center; gap: 11px;
+  padding: 4px 8px 20px; margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.sidebar .brand img { width: 36px; height: 36px; border-radius: 7px; }
+.sidebar .brand .t1 { font-family: "Fraunces", serif; font-weight: 700; font-size: 16px; line-height: 1; color: #fff; }
+.sidebar .brand .t2 { font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: #9CB6D0; margin-top: 3px; }
+
+.sidebar button.nav {
+  background: transparent; color: #C7D2E0;
+  text-align: left; border-radius: 5px; padding: 9px 12px;
+  font-weight: 500; display: flex; align-items: center; gap: 9px;
+}
+.sidebar button.nav:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
+.sidebar button.nav.active { background: var(--kraft); color: #fff; }
+.sidebar button.nav .ic { width: 17px; text-align: center; opacity: 0.9; }
+
+.sidebar .who {
+  margin-top: auto; font-size: 12px; color: #9CB6D0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 14px;
+}
+.sidebar .who .name { color: #EDEAE0; font-weight: 600; margin-bottom: 8px; }
+.sidebar .who button { width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.18); color: #C7D2E0; }
+.sidebar .who button:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.35); }
+
+main { padding: 30px 34px; max-width: 1160px; }
+.page-head { margin-bottom: 22px; }
+.page-head .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--kraft); font-weight: 600; }
+
+/* ---------- cards ---------- */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+  margin-bottom: 22px;
+}
+.card > h3:first-child { margin-top: 0; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  text-align: left; font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--muted); font-weight: 600;
+  padding: 9px 10px; border-bottom: 1px solid var(--line);
+}
+td { padding: 10px; border-bottom: 1px solid var(--line); }
+tbody tr:hover { background: var(--paper); }
+td.num { font-family: "JetBrains Mono", monospace; }
+
+.row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+.item-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; text-transform: capitalize;
+  background: var(--empty-pallet); color: var(--ink-soft);
+}
+.badge.listo, .badge.enviado { background: var(--teal-soft); color: var(--teal); }
+.badge.planificando { background: #FBEBD2; color: #9d5522; }
+
+/* ============================================================
+   CAMIÓN DINÁMICO — la vista de armado. Trailer en planta
+   (vista de pájaro): cabina + caja con las tarimas llenándose
+   de adelante hacia atrás, animadas y coloreadas por producto.
+   ============================================================ */
+
+.truck-plan { margin-bottom: 26px; }
+.truck-plan .plan-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 4px; }
+.truck-plan .plan-head .tname { font-family: "Fraunces", serif; font-size: 18px; font-weight: 600; }
+.truck-plan .verdict { font-size: 13px; font-weight: 600; }
+.truck-plan .verdict.ok { color: var(--teal); }
+.truck-plan .verdict.bad { color: var(--brick); }
+
+/* gauge de ocupación */
+.gauge { display: flex; align-items: center; gap: 14px; margin: 14px 0 18px; }
+.gauge .pct { font-family: "JetBrains Mono", monospace; font-size: 30px; font-weight: 700; line-height: 1; min-width: 92px; }
+.gauge .pct .u { font-size: 14px; color: var(--muted); font-weight: 500; }
+.gauge .bar-wrap { flex: 1; }
+.gauge .bar {
+  height: 12px; border-radius: 999px; background: var(--empty-pallet);
+  overflow: hidden; border: 1px solid var(--line);
+}
+.gauge .fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--kraft), #5B9BD5);
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gauge .fill.over { background: linear-gradient(90deg, var(--brick), #d05b5b); }
+.gauge .cap-note { font-size: 12px; color: var(--muted); margin-top: 5px; font-family: "JetBrains Mono", monospace; }
+
+/* el trailer en sí */
+.truck {
+  --pallet: 34px;
+  display: flex; align-items: stretch; gap: 0;
+  margin: 6px 0 4px; user-select: none;
+  overflow-x: auto; overflow-y: visible; padding-bottom: 10px;
+}
+.cab {
+  position: relative; width: 62px; flex: none;
+  background: linear-gradient(160deg, var(--kraft), var(--ink-soft));
+  border-radius: 14px 6px 6px 14px;
+  margin-right: 6px;
+  box-shadow: inset -6px 0 12px rgba(0,0,0,0.18);
+}
+.cab::before { /* parabrisas */
+  content: ""; position: absolute; top: 12px; left: 12px; right: 8px; height: 22px;
+  background: #A3D4F0; border-radius: 5px 3px 3px 5px; opacity: 0.85;
+}
+.cab::after { /* rejilla */
+  content: ""; position: absolute; bottom: 14px; left: 14px; right: 10px; height: 34%;
+  background: repeating-linear-gradient(180deg, rgba(255,255,255,0.22) 0 2px, transparent 2px 6px);
+  border-radius: 3px;
+}
+.cab .wheel { position: absolute; bottom: -9px; width: 16px; height: 16px; border-radius: 50%; background: #23262b; border: 3px solid #4a4f57; }
+.cab .wheel.f { left: 8px; }
+
+.deck {
+  position: relative; flex: 1 0 auto; min-width: 440px;
+  border: 2px solid var(--ink-soft);
+  border-radius: 5px 12px 12px 5px;
+  background:
+    repeating-linear-gradient(90deg, rgba(43,93,155,0.05) 0 1px, transparent 1px 26px),
+    var(--paper);
+  padding: 8px;
+}
+.deck .wheel-set { position: absolute; bottom: -9px; display: flex; gap: 6px; }
+.deck .wheel-set.rear { right: 30px; }
+.deck .wheel-set .wheel { width: 16px; height: 16px; border-radius: 50%; background: #23262b; border: 3px solid #4a4f57; }
+
+.deck-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, var(--pallet));
+  grid-auto-columns: var(--pallet);
+  gap: 5px;
+}
+.pallet {
+  border-radius: 4px;
+  border: 1px dashed var(--line);
+  background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.25) 0 3px, transparent 3px 6px),
+    var(--empty-pallet);
+  position: relative;
+}
+.pallet.filled {
+  border-style: solid; border-color: rgba(0,0,0,0.14);
+  box-shadow: inset 0 -3px 6px rgba(0,0,0,0.14), inset 0 2px 3px rgba(255,255,255,0.28);
+  animation: palletIn 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.pallet.filled::after { /* travesaño de la tarima */
+  content: ""; position: absolute; inset: 4px; border-radius: 2px;
+  border: 1px solid rgba(255,255,255,0.28);
+}
+@keyframes palletIn {
+  from { opacity: 0; transform: scale(0.3) translateY(-6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* zona de sobrantes (no cabe) */
+.overflow-zone { margin-top: 14px; padding: 10px 12px; border: 1px dashed var(--brick); border-radius: 6px; background: var(--brick-soft); }
+.overflow-zone .ttl { font-size: 12px; font-weight: 700; color: var(--brick); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+.overflow-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.overflow-grid .pallet { width: 26px; height: 26px; border-color: var(--brick); }
+
+/* leyenda por producto */
+.legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.legend-swatch { width: 14px; height: 14px; border-radius: 4px; flex: none; box-shadow: inset 0 -2px 3px rgba(0,0,0,0.18); }
+.legend-item .qty { font-family: "JetBrains Mono", monospace; color: var(--muted); font-size: 12px; }
+
+/* barra de reportes */
+.utilization-bar { height: 9px; border-radius: 999px; background: var(--empty-pallet); overflow: hidden; margin: 3px 0 6px; border: 1px solid var(--line); }
+.utilization-fill { height: 100%; background: linear-gradient(90deg, var(--kraft), #5B9BD5); transition: width 0.7s ease; }
+
+/* ---------- drag & drop ---------- */
+.dnd-wrap { display: grid; grid-template-columns: 280px 1fr; gap: 22px; align-items: start; }
+.palette { position: sticky; top: 22px; }
+.prod-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.prod-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border: 1px solid var(--line); border-radius: 7px;
+  background: var(--paper-raised); cursor: grab; transition: border-color 0.12s, box-shadow 0.12s, transform 0.06s;
+}
+.prod-chip:hover { border-color: var(--kraft); box-shadow: var(--shadow); }
+.prod-chip:active { cursor: grabbing; transform: scale(0.98); }
+.prod-chip.disabled { opacity: 0.5; cursor: not-allowed; }
+.prod-chip .pc-body { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.prod-chip .pc-name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prod-chip .pc-meta { font-size: 11px; color: var(--muted); }
+.prod-chip .pc-grip { color: var(--muted); font-size: 15px; letter-spacing: -2px; }
+
+.deck-drop { border-radius: 12px; transition: box-shadow 0.15s, background 0.15s; }
+.deck-drop.hover .deck { border-color: var(--kraft); box-shadow: 0 0 0 3px var(--kraft-soft); background: var(--kraft-soft); }
+.deck .drop-hint {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 14px; font-weight: 500; pointer-events: none; text-align: center;
+}
+
+.load-lines { margin-top: 16px; display: flex; flex-direction: column; gap: 6px; }
+.load-line {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper-raised);
+}
+.load-line .ll-name { font-weight: 600; flex: 1 1 140px; min-width: 0; }
+.load-line .ll-qty { width: 100px; }
+.load-line .ll-pallets { font-size: 12px; color: var(--kraft); font-weight: 600; }
+
+@media (max-width: 900px) { .dnd-wrap { grid-template-columns: 1fr; } .palette { position: static; } }
+
+/* misc */
+.hint { font-size: 12px; color: var(--muted); }
+.pill-toggle { display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 3px; }
+
+@media (max-width: 720px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .sidebar .brand { border-bottom: none; padding: 4px 8px; margin-bottom: 0; width: 100%; }
+  .sidebar button.nav { flex: 1 1 auto; justify-content: center; }
+  .sidebar .who { margin-top: 0; border: none; padding-top: 0; margin-left: auto; }
+  .sidebar .who button { width: auto; }
+  main { padding: 20px 16px; overflow-x: hidden; }
+  .row > label { flex: 1 1 100%; }
+  .row > label input, .row > label select { width: 100%; }
+  .item-row { flex-wrap: wrap; }
+  .item-row select, .item-row input { min-width: 0 !important; flex: 1 1 160px; width: auto; }
+}
+
+</style>
+  <!-- Alpine.js: reactividad para el armado visual de camión, sin build step
+       ni framework completo — ver ARQUITECTURA.md sección 2. -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="app()" x-init="init()">
+  <div style="background:#C08A3E;color:#fff;text-align:center;padding:6px;font:600 12px Inter,sans-serif;">DEMO interactiva · datos de ejemplo · arrastra los productos al camión</div>
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="brand">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAC6UlEQVR4nO2aoW4bQRCGJ1WkwDAbJaygjkzyApUVaOLCQKMyB/UpilIWFGhYk8Lq1BcoqeJWCqtJa9gXcMGvrFa3u7Mzu3M+R8qHknPi/N8/e749O0e73Y6eM6/6DlDLi0DfdC5w1zx2+vxH3Z3E337+JaJff/7h2/eT1138lU4EEB04AWCuYSzgRwctAWCoYSYQRgdRAWCiYSCQig4YAVCpUSXARwdZAVCsUf4yKkkvZHh6svr+u+x3Syagii6ZwPD0xH09uzxXhdEJFLSeFfDTO+QaUoHiBVMmACQaeYHKtc4LMOkdvAYnYHKaMgKS9I6URlzA8BXGSgCEGr1NQJs+NYHj6NGLmxURPdzOyHQaZSD6u49fiejzh6vWo3EB0J2GsH4/egpOADiNPY9idnnORwd5AXBxs7IaRbZ+SfEOqQAZrSg+vSo6UAiA7k4M4ZppoRagp/RE9PbNUOWQqr+geIdOANHPru/dkc1yThWjqIkOFAIPtzM/OsARiUar/vroQCQQFt/CaaQcwvT10UFeIFp8lLPr++worIp3cALZ4kOiKwr1m0cH3GZOFT0EGnfNI27YTaJL90KV0f0n2Szn5q37lFwHemEyGiym4/D4MxCYjAbMowf9+cBkNHDpF9Pxpy8/wp85XAG+eMchLqEweqp+OjSBaOtMeqpcQnilN8Ff7irKBZC+3oGPztdPxQJ+7mKH4tZ9+jkHhLmz9VPZBMLKVUMwTE8FAn7W8NaMx2TNtNAJhOmFDtrowvppP1di89Z9FAKpxZMdQrPeqjLJ66eUwGY5b0VJpQ+PmDiELKbj6HY6/wlN/X2Zf0OTXU5h/dHcjvx1AI2a3KPR0yhSGq30fHQgvZCZa/CjkEQHuiuxoUY4CtQvjw4Kr8RW+9DWya1NT/W70Xqa9bZZbwuig6rNnMmKCt/qUWGwGy3WqIwOzLbTKg2T6MD4fiCrYRgddHJDE9Uwjw46/LfL/XC4b2wJeRHom/9OwZ2R/Ev40AAAAABJRU5ErkJggg==" alt="Arqueta Folding" />
+        <div>
+          <div class="t1">Arqueta</div>
+          <div class="t2">Embalaje</div>
+        </div>
+      </div>
+      <button class="nav" :class="{active: view === 'armado'}" @click="view = 'armado'"><span class="ic">🚚</span> Armar camión</button>
+      <button class="nav" :class="{active: view === 'cargas'}" @click="view = 'cargas'; loadTruckLoads()" x-show="session.role !== 'client'"><span class="ic">📦</span> Cargas</button>
+      <button class="nav" :class="{active: view === 'ordenes'}" @click="view = 'ordenes'"><span class="ic">📝</span> Órdenes de compra</button>
+      <button class="nav" :class="{active: view === 'catalogo'}" @click="view = 'catalogo'" x-show="session.role !== 'client'"><span class="ic">🗂️</span> Catálogo</button>
+      <button class="nav" :class="{active: view === 'reportes'}" @click="view = 'reportes'; loadReport()" x-show="session.role !== 'client'"><span class="ic">📊</span> Reportes</button>
+      <button class="nav" :class="{active: view === 'camiones'}" @click="view = 'camiones'" x-show="session.role === 'admin'"><span class="ic">⚙️</span> Camiones</button>
+      <div class="who">
+        <div class="name" x-text="session.display_name"></div>
+        <button @click="logout()">Cerrar sesión</button>
+      </div>
+    </nav>
+
+    <main>
+      <!-- ================= ARMADO VISUAL ================= -->
+      <section x-show="view === 'armado'">
+        <div class="page-head">
+          <div class="kicker">Planeación de carga</div>
+          <h2>Armar camión</h2>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <label>
+              Modo
+              <select x-model="mode">
+                <option value="single">Un camión · arrastrar productos</option>
+                <option value="auto">Plan automático · varios camiones</option>
+              </select>
+            </label>
+            <label x-show="mode === 'single'">
+              Camión
+              <select x-model="selectedTruckId">
+                <option value="">Elige...</option>
+                <template x-for="t in trucks" :key="t.id">
+                  <option :value="t.id" x-text="`${t.name} (${t.pallet_capacity} tarimas)`"></option>
+                </template>
+              </select>
+            </label>
+            <label>
+              Cargar desde una orden de compra
+              <select x-model="fromPoId" @change="loadFromPO()">
+                <option value="">(opcional)</option>
+                <template x-for="po in purchaseOrders" :key="po.id">
+                  <option :value="po.id" x-text="po.po_number"></option>
+                </template>
+              </select>
+            </label>
+          </div>
+          <p class="error" x-show="packError" x-text="packError" style="margin-top: 0.8em;"></p>
+        </div>
+
+        <!-- ===== MODO SINGLE: arrastra productos al camión ===== -->
+        <div class="dnd-wrap" x-show="mode === 'single'">
+          <!-- paleta de productos arrastrables -->
+          <div class="card palette">
+            <h3>Productos <span class="hint">· arrástralos al camión →</span></h3>
+            <div class="prod-list">
+              <template x-for="p in products" :key="p.id">
+                <div class="prod-chip" :class="{disabled: !hasSheet(p)}"
+                     :draggable="hasSheet(p)"
+                     @dragstart="onProductDragStart($event, p)"
+                     @dblclick="addProductToBuild(p.id)"
+                     :title="hasSheet(p) ? 'Arrastra al camión (o doble clic para agregar)' : 'Este producto no tiene ficha de embalaje todavía'">
+                  <span class="legend-swatch" :style="`background:${productColor(p.id)}`"></span>
+                  <span class="pc-body">
+                    <span class="pc-name" x-text="p.name"></span>
+                    <span class="pc-meta mono" x-text="hasSheet(p) ? `${boxesPerPallet(p)} cajas / tarima` : 'sin ficha de embalaje'"></span>
+                  </span>
+                  <span class="pc-grip" x-show="hasSheet(p)">⠿</span>
+                </div>
+              </template>
+              <p class="hint" x-show="!products.length">No hay productos todavía — agrégalos en Catálogo.</p>
+            </div>
+          </div>
+
+          <!-- camión: zona de drop + relleno en vivo -->
+          <div class="card truck-plan">
+            <template x-if="!liveTruck()">
+              <p class="hint" style="margin: 0;">Elige un camión arriba para empezar a armar la carga.</p>
+            </template>
+
+            <template x-if="liveTruck()">
+              <div>
+                <div class="plan-head">
+                  <span class="tname" x-text="liveTruck().name"></span>
+                  <span class="verdict" x-show="liveLines().length"
+                        :class="palletsUsed(liveLines()) <= liveTruck().pallet_capacity ? 'ok' : 'bad'"
+                        x-text="palletsUsed(liveLines()) <= liveTruck().pallet_capacity ? '✓ Cabe en este camión' : `✕ No cabe — sobran ${palletsUsed(liveLines()) - liveTruck().pallet_capacity} tarima(s)`"></span>
+                </div>
+
+                <div class="gauge">
+                  <div class="pct mono"><span x-text="Math.round(100 * palletsUsed(liveLines()) / liveTruck().pallet_capacity)"></span><span class="u">%</span></div>
+                  <div class="bar-wrap">
+                    <div class="bar">
+                      <div class="fill" :class="{over: palletsUsed(liveLines()) > liveTruck().pallet_capacity}"
+                           :style="`width:${Math.min(100, Math.round(100 * palletsUsed(liveLines()) / liveTruck().pallet_capacity))}%`"></div>
+                    </div>
+                    <div class="cap-note" x-text="`${palletsUsed(liveLines())} / ${liveTruck().pallet_capacity} tarimas ocupadas`"></div>
+                  </div>
+                </div>
+
+                <!-- CAMIÓN como zona de drop -->
+                <div class="truck deck-drop" :class="{hover: dropHover}"
+                     @dragover="onDeckDragOver($event)" @dragleave="onDeckDragLeave()" @drop="onDeckDrop($event)">
+                  <div class="cab"><span class="wheel f"></span></div>
+                  <div class="deck">
+                    <div class="deck-grid">
+                      <template x-for="(cell, i) in deckCells(liveLines(), liveTruck().pallet_capacity)" :key="i">
+                        <div class="pallet" :class="{filled: cell.filled}"
+                             :style="cell.filled ? `background:${cell.color}; animation-delay:${i * 24}ms` : ''"
+                             :title="cell.name"></div>
+                      </template>
+                    </div>
+                    <div class="wheel-set rear"><span class="wheel"></span><span class="wheel"></span></div>
+                    <div class="drop-hint" x-show="!liveLines().length">Arrastra productos aquí 🚚</div>
+                  </div>
+                </div>
+
+                <!-- sobrantes -->
+                <template x-if="palletsUsed(liveLines()) > liveTruck().pallet_capacity">
+                  <div class="overflow-zone">
+                    <div class="ttl">No cabe · tarimas fuera del camión</div>
+                    <div class="overflow-grid">
+                      <template x-for="(cell, i) in overflowCells(liveLines(), liveTruck().pallet_capacity)" :key="i">
+                        <div class="pallet filled" :style="`background:${cell.color}`" :title="cell.name"></div>
+                      </template>
+                    </div>
+                  </div>
+                </template>
+
+                <!-- productos en la carga: cantidad de cajas editable -->
+                <div class="load-lines" x-show="buildItems.some(r => r.product_id)">
+                  <template x-for="(row, i) in buildItems" :key="i">
+                    <div class="load-line" x-show="row.product_id">
+                      <span class="legend-swatch" :style="`background:${productColor(Number(row.product_id))}`"></span>
+                      <span class="ll-name" x-text="productName(Number(row.product_id))"></span>
+                      <input type="number" min="1" x-model="row.quantity_boxes" class="ll-qty" />
+                      <span class="hint">cajas</span>
+                      <span class="ll-pallets mono" x-show="row.quantity_boxes"
+                            x-text="`= ${Math.ceil(Number(row.quantity_boxes) / boxesPerPallet(products.find(p => p.id === Number(row.product_id))))} tarima(s)`"></span>
+                      <button class="ghost" @click="removeBuildItemRow(i)">✕</button>
+                    </div>
+                  </template>
+                </div>
+
+                <p class="muted" x-show="liveImporteTotal() !== null" style="margin-top: 0.8em;">
+                  Importe de referencia: <strong class="mono" x-text="fmtMoney(liveImporteTotal())"></strong>
+                </p>
+
+                <button style="margin-top: 1em;"
+                        :disabled="!liveLines().length || palletsUsed(liveLines()) > liveTruck().pallet_capacity || savingLoad"
+                        @click="saveLiveLoad()">Guardar esta carga</button>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- ===== MODO AUTO: formulario + plan del backend ===== -->
+        <div class="card" x-show="mode === 'auto'">
+          <h3>Productos y cantidades</h3>
+          <template x-for="(row, i) in buildItems" :key="i">
+            <div class="item-row">
+              <span class="legend-swatch" :style="row.product_id ? `background:${productColor(Number(row.product_id))}` : 'background:var(--empty-pallet)'"></span>
+              <select x-model="row.product_id" style="min-width: 240px;">
+                <option value="">Producto...</option>
+                <template x-for="p in products" :key="p.id">
+                  <option :value="p.id" x-text="p.name" :disabled="!hasSheet(p)"></option>
+                </template>
+              </select>
+              <input type="number" min="1" placeholder="Cajas" x-model="row.quantity_boxes" style="width: 120px;" />
+              <button class="ghost" @click="removeBuildItemRow(i)" x-show="buildItems.length > 1">✕</button>
+            </div>
+          </template>
+          <button class="secondary" @click="addBuildItemRow()">+ Agregar producto</button>
+          <div style="margin-top: 1.4em;">
+            <button @click="computePlan()">Calcular plan</button>
+          </div>
+        </div>
+
+        <!-- resultado: plan automático (varios camiones) -->
+        <template x-if="shipmentPlan">
+          <div>
+            <template x-for="(truck, ti) in shipmentPlan" :key="ti">
+              <div class="card truck-plan">
+                <div class="plan-head">
+                  <span class="tname" x-text="`Camión ${ti + 1} · ${truck.truck_name}`"></span>
+                  <span class="verdict ok" x-text="`${Math.round(truck.utilization * 100)}% ocupado`"></span>
+                </div>
+
+                <div class="gauge">
+                  <div class="pct mono"><span x-text="Math.round(truck.utilization * 100)"></span><span class="u">%</span></div>
+                  <div class="bar-wrap">
+                    <div class="bar"><div class="fill" :style="`width:${Math.round(truck.utilization * 100)}%`"></div></div>
+                    <div class="cap-note" x-text="`${truck.pallets_used} / ${truck.pallet_capacity} tarimas`"></div>
+                  </div>
+                </div>
+
+                <div class="truck">
+                  <div class="cab"><span class="wheel f"></span></div>
+                  <div class="deck">
+                    <div class="deck-grid">
+                      <template x-for="(cell, i) in deckCells(truck.items, truck.pallet_capacity)" :key="i">
+                        <div class="pallet" :class="{filled: cell.filled}"
+                             :style="cell.filled ? `background:${cell.color}; animation-delay:${i * 28}ms` : ''"
+                             :title="cell.name"></div>
+                      </template>
+                    </div>
+                    <div class="wheel-set rear"><span class="wheel"></span><span class="wheel"></span></div>
+                  </div>
+                </div>
+
+                <div class="legend">
+                  <template x-for="item in truck.items" :key="item.product_id">
+                    <span class="legend-item">
+                      <span class="legend-swatch" :style="`background:${productColor(item.product_id)}`"></span>
+                      <span x-text="item.product_name"></span>
+                      <span class="qty" x-text="`${item.pallets} tarima(s)` + (item.importe !== null ? ` · ${fmtMoney(item.importe)}` : '')"></span>
+                    </span>
+                  </template>
+                </div>
+              </div>
+            </template>
+            <p class="muted" x-show="shipmentImporteTotal() !== null">Importe total de referencia: <strong class="mono" x-text="fmtMoney(shipmentImporteTotal())"></strong></p>
+            <button :disabled="savingLoad" @click="saveShipmentPlan()">Guardar estas cargas</button>
+          </div>
+        </template>
+      </section>
+
+      <!-- ================= CARGAS GUARDADAS ================= -->
+      <section x-show="view === 'cargas'">
+        <div class="page-head"><div class="kicker">Historial</div><h2>Cargas</h2></div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Carga</th><th>Camión</th><th>Tarimas</th><th>Estatus</th><th></th></tr></thead>
+            <tbody>
+              <template x-for="load in truckLoads" :key="load.id">
+                <tr>
+                  <td x-text="load.name"></td>
+                  <td x-text="load.truck_name"></td>
+                  <td class="num" x-text="load.pallet_capacity"></td>
+                  <td><span class="badge" :class="load.status" x-text="load.status"></span></td>
+                  <td>
+                    <select @change="setLoadStatus(load.id, $event.target.value)">
+                      <option value="">Cambiar a...</option>
+                      <option value="planificando">Planificando</option>
+                      <option value="listo">Listo</option>
+                      <option value="enviado">Enviado</option>
+                    </select>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= ÓRDENES DE COMPRA ================= -->
+      <section x-show="view === 'ordenes'">
+        <div class="page-head"><div class="kicker">Demanda</div><h2>Órdenes de compra</h2></div>
+        <div class="card" x-show="session.role !== 'client'">
+          <h3>Nueva orden</h3>
+          <div class="row">
+            <label>Folio <input type="text" x-model="newPO.po_number" /></label>
+            <label x-show="clients.length">
+              Cliente
+              <select x-model="newPO.client_id">
+                <option value="">(interno)</option>
+                <template x-for="c in clients" :key="c.id">
+                  <option :value="c.id" x-text="c.name"></option>
+                </template>
+              </select>
+            </label>
+          </div>
+          <h3 style="margin-top: 1.2em;">Productos</h3>
+          <template x-for="(row, i) in newPO.items" :key="i">
+            <div class="item-row">
+              <select x-model="row.product_id" style="min-width: 240px;">
+                <option value="">Producto...</option>
+                <template x-for="p in products" :key="p.id">
+                  <option :value="p.id" x-text="p.name"></option>
+                </template>
+              </select>
+              <input type="number" min="1" placeholder="Cajas" x-model="row.quantity_boxes" style="width: 120px;" />
+              <button class="ghost" @click="removePOItemRow(i)" x-show="newPO.items.length > 1">✕</button>
+            </div>
+          </template>
+          <button class="secondary" @click="addPOItemRow()">+ Agregar producto</button>
+          <div style="margin-top: 1.2em;">
+            <button @click="createPO()">Crear orden</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Órdenes existentes</h3>
+          <table>
+            <thead><tr><th>Folio</th><th>Fecha</th></tr></thead>
+            <tbody>
+              <template x-for="po in purchaseOrders" :key="po.id">
+                <tr><td x-text="po.po_number"></td><td x-text="new Date(po.created_at).toLocaleDateString('es-MX')"></td></tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= CATÁLOGO ================= -->
+      <section x-show="view === 'catalogo'">
+        <div class="page-head"><div class="kicker">Productos y fichas</div><h2>Catálogo</h2></div>
+
+        <div class="card">
+          <h3>Nuevo producto</h3>
+          <div class="row">
+            <label>Nombre <input type="text" x-model="newProduct.name" /></label>
+            <label>SKU <input type="text" x-model="newProduct.sku" /></label>
+            <label x-show="clients.length">
+              Cliente
+              <select x-model="newProduct.client_id">
+                <option value="">(interno)</option>
+                <template x-for="c in clients" :key="c.id">
+                  <option :value="c.id" x-text="c.name"></option>
+                </template>
+              </select>
+            </label>
+            <button @click="createProduct()">Agregar</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Subir / actualizar ficha de embalaje</h3>
+          <p class="hint">El PDF se analiza automáticamente pero <strong>siempre se revisa aquí antes de guardar</strong> — nunca se guarda a ciegas.</p>
+          <div class="row" style="margin-top: 0.8em;">
+            <label>
+              Producto
+              <select x-model="sheetProductId">
+                <option value="">Elige...</option>
+                <template x-for="p in products" :key="p.id">
+                  <option :value="p.id" x-text="p.name"></option>
+                </template>
+              </select>
+            </label>
+            <label>Ficha (PDF) <input type="file" accept="application/pdf" @change="onSheetFileChange($event)" /></label>
+            <button class="secondary" :disabled="!sheetProductId || !sheetFile" @click="parseSheet()">Analizar PDF</button>
+          </div>
+          <p class="error" x-show="sheetError" x-text="sheetError"></p>
+
+          <template x-if="sheetFields">
+            <div style="margin-top: 1.2em;">
+              <p class="hint" x-show="sheetFields.product_name || sheetFields.client_name">
+                Ficha leída: <strong x-text="sheetFields.product_name"></strong>
+                <span x-show="sheetFields.client_name" x-text="' — ' + sheetFields.client_name"></span>
+              </p>
+              <div class="row">
+                <label>Postetas por caja <input type="number" x-model="sheetFields.boxes_per_corrugado" /></label>
+                <label>Cantidad por cama <input type="number" x-model="sheetFields.cantidad_por_cama" /></label>
+                <label>Estiba <input type="number" x-model="sheetFields.estiba" /></label>
+                <label>Precio unitario (MXP) <input type="number" step="0.01" min="0" x-model="sheetFields.unit_price" placeholder="opcional" /></label>
+              </div>
+              <p class="hint" x-show="sheetFields.boxes_per_corrugado && sheetFields.cantidad_por_cama && sheetFields.estiba" style="margin-top: 0.8em;">
+                Cajas plegadizas por tarima: <strong class="mono" x-text="sheetFields.boxes_per_corrugado * sheetFields.cantidad_por_cama * sheetFields.estiba"></strong>
+              </p>
+              <p class="error" x-show="!sheetFields.boxes_per_corrugado || !sheetFields.cantidad_por_cama || !sheetFields.estiba">
+                El PDF no traía uno o más de estos valores claramente — compáralos contra la ficha y captúralos a mano antes de guardar.
+              </p>
+              <button style="margin-top: 0.8em;" :disabled="!sheetFields.boxes_per_corrugado || !sheetFields.cantidad_por_cama || !sheetFields.estiba" @click="saveSheet()">Guardar ficha</button>
+            </div>
+          </template>
+        </div>
+
+        <div class="card">
+          <table>
+            <thead><tr><th>Producto</th><th>SKU</th><th>Postetas/caja</th><th>Cant./cama</th><th>Estiba</th><th>Cajas/tarima</th><th>Precio</th></tr></thead>
+            <tbody>
+              <template x-for="p in products" :key="p.id">
+                <tr>
+                  <td>
+                    <span class="legend-swatch" :style="`background:${productColor(p.id)}; display:inline-block; vertical-align:middle; margin-right:8px;`"></span>
+                    <span x-text="p.name"></span>
+                  </td>
+                  <td x-text="p.sku || '—'"></td>
+                  <td class="num" x-text="p.boxes_per_corrugado || '—'"></td>
+                  <td class="num" x-text="p.cantidad_por_cama || '—'"></td>
+                  <td class="num" x-text="p.estiba || '—'"></td>
+                  <td class="num" x-text="boxesPerPallet(p) || '—'"></td>
+                  <td class="num" x-text="fmtMoney(p.unit_price)"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= REPORTES ================= -->
+      <section x-show="view === 'reportes'">
+        <div class="page-head"><div class="kicker">Ocupación</div><h2>Reportes</h2></div>
+        <div class="card">
+          <h3>Ocupación de tarimas por carga</h3>
+          <table>
+            <thead><tr><th>Carga</th><th>Camión</th><th>Ocupación</th><th>Estatus</th></tr></thead>
+            <tbody>
+              <template x-for="row in reportRows" :key="row.id">
+                <tr>
+                  <td x-text="row.name"></td>
+                  <td x-text="row.truck_name"></td>
+                  <td style="min-width: 180px;">
+                    <div class="utilization-bar">
+                      <div class="utilization-fill" :style="`width:${Math.min(100, Math.round(100 * row.pallets_used / row.pallet_capacity))}%`"></div>
+                    </div>
+                    <span class="hint mono" x-text="`${row.pallets_used} / ${row.pallet_capacity} tarimas`"></span>
+                  </td>
+                  <td><span class="badge" :class="row.status" x-text="row.status"></span></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= CAMIONES (admin) ================= -->
+      <section x-show="view === 'camiones'">
+        <div class="page-head"><div class="kicker">Flota</div><h2>Camiones</h2></div>
+        <div class="card">
+          <h3>Nuevo tipo de camión</h3>
+          <div class="row">
+            <label>Nombre <input type="text" x-model="newTruck.name" /></label>
+            <label>Tarimas <input type="number" min="1" x-model="newTruck.pallet_capacity" /></label>
+            <button @click="createTruck()">Agregar</button>
+          </div>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Nombre</th><th>Capacidad (tarimas)</th></tr></thead>
+            <tbody>
+              <template x-for="t in trucks" :key="t.id">
+                <tr><td x-text="t.name"></td><td class="num" x-text="t.pallet_capacity"></td></tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  
+  <script>function app() {
+  return {
+    view: "armado",
+    session: { display_name: "", role: "" },
+    // Paleta fija por índice de producto (colores de la marca Arqueta) —
+    // mismo producto siempre se ve del mismo color en toda la app, útil para
+    // leer el grid de tarimas de un vistazo.
+    colors: ["#2B5D9B", "#2F6F62", "#A63A3A", "#C08A3E", "#2E4163", "#7E57A8", "#5B9BD5", "#8A8578"],
+
+    products: [],
+    trucks: [],
+    clients: [],
+    purchaseOrders: [],
+    truckLoads: [],
+    reportRows: [],
+
+    newProduct: { name: "", sku: "", client_id: "" },
+    sheetProductId: "",
+    sheetFields: null,
+    sheetFile: null,
+    sheetError: "",
+
+    newPO: { po_number: "", client_id: "", items: [{ product_id: "", quantity_boxes: "" }] },
+
+    mode: "single",
+    selectedTruckId: "",
+    buildItems: [{ product_id: "", quantity_boxes: "" }],
+    fromPoId: "",
+    singleResult: null,
+    shipmentPlan: null,
+    packError: "",
+    savingLoad: false,
+
+    newTruck: { name: "", pallet_capacity: "" },
+
+    async init() {
+      await this.loadSession();
+      const calls = [this.loadProducts(), this.loadTrucks(), this.loadPurchaseOrders()];
+      if (this.session.role !== "client") calls.push(this.loadTruckLoads());
+      if (this.session.role === "admin") calls.push(this.loadClients());
+      await Promise.all(calls);
+    },
+
+    async api(path, opts = {}) {
+      const headers = opts.body && !(opts.body instanceof FormData) ? { "Content-Type": "application/json" } : {};
+      const resp = await fetch(path, { ...opts, headers });
+      if (resp.status === 401) {
+        location.href = "/login";
+        return;
+      }
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(data.error || "Ocurrió un error");
+      return data;
+    },
+
+    async loadSession() {
+      this.session = await this.api("/api/session");
+    },
+    async logout() {
+      await this.api("/api/logout", { method: "POST" });
+      location.href = "/login";
+    },
+
+    async loadProducts() { this.products = await this.api("/api/products"); },
+    async loadTrucks() { this.trucks = await this.api("/api/trucks"); },
+    async loadClients() { this.clients = await this.api("/api/clients"); },
+    async loadPurchaseOrders() { this.purchaseOrders = await this.api("/api/purchase-orders"); },
+    async loadTruckLoads() { this.truckLoads = await this.api("/api/truck-loads"); },
+    async loadReport() { this.reportRows = await this.api("/api/reports/pallet-usage"); },
+
+    productName(productId) {
+      const p = this.products.find((p) => p.id === productId);
+      return p ? p.name : `#${productId}`;
+    },
+    productColor(productId) {
+      const idx = this.products.findIndex((p) => p.id === productId);
+      return this.colors[(idx < 0 ? productId : idx) % this.colors.length];
+    },
+    hasSheet(product) {
+      return Boolean(product.boxes_per_corrugado && product.cantidad_por_cama && product.estiba);
+    },
+    fmtMoney(value) {
+      if (value === null || value === undefined) return "—";
+      return "$" + Number(value).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    },
+    shipmentImporteTotal() {
+      if (!this.shipmentPlan) return null;
+      const importes = this.shipmentPlan.flatMap((t) => t.items).map((i) => i.importe).filter((v) => v !== null && v !== undefined);
+      return importes.length ? importes.reduce((a, b) => a + b, 0) : null;
+    },
+    // Cajas plegadizas por tarima = postetas por caja * cantidad por cama *
+    // estiba — misma cuenta que packing.py, para mostrarla en el catálogo
+    // sin ir y venir al backend.
+    boxesPerPallet(product) {
+      if (!this.hasSheet(product)) return null;
+      return product.boxes_per_corrugado * product.cantidad_por_cama * product.estiba;
+    },
+    // Total de tarimas que ocupa una lista de items.
+    palletsUsed(items) {
+      return items.reduce((n, it) => n + it.pallets, 0);
+    },
+    // Celdas del DECK del camión: una tarima ocupada (coloreada por producto)
+    // por cada pallet, más las libres, hasta la capacidad. Cada celda trae el
+    // nombre del producto para el tooltip del camión dinámico.
+    deckCells(items, capacity) {
+      const cells = [];
+      for (const item of items) {
+        for (let i = 0; i < item.pallets; i++) {
+          if (cells.length >= capacity) break;
+          cells.push({ filled: true, color: this.productColor(item.product_id), name: item.product_name });
+        }
+      }
+      while (cells.length < capacity) cells.push({ filled: false, color: null, name: "" });
+      return cells;
+    },
+    // Tarimas que NO cabieron (sobran por encima de la capacidad) — se pintan
+    // en la zona roja de "no cabe".
+    overflowCells(items, capacity) {
+      const used = this.palletsUsed(items);
+      const over = Math.max(0, used - capacity);
+      const cells = [];
+      // recorre las tarimas en orden y toma solo las que exceden la capacidad
+      let idx = 0;
+      for (const item of items) {
+        for (let i = 0; i < item.pallets; i++) {
+          if (idx >= capacity) cells.push({ color: this.productColor(item.product_id), name: item.product_name });
+          idx++;
+        }
+      }
+      return cells;
+    },
+
+    // --- catálogo ---
+    async createProduct() {
+      await this.api("/api/products", {
+        method: "POST",
+        body: JSON.stringify({
+          name: this.newProduct.name,
+          sku: this.newProduct.sku || null,
+          client_id: this.newProduct.client_id || null,
+        }),
+      });
+      this.newProduct = { name: "", sku: "", client_id: "" };
+      await this.loadProducts();
+    },
+
+    onSheetFileChange(e) {
+      this.sheetFile = e.target.files[0] || null;
+      this.sheetFields = null;
+    },
+
+    async parseSheet() {
+      this.sheetError = "";
+      if (!this.sheetProductId || !this.sheetFile) return;
+      const form = new FormData();
+      form.append("file", this.sheetFile);
+      try {
+        this.sheetFields = await this.api(`/api/products/${this.sheetProductId}/packaging-sheet/parse-pdf`, {
+          method: "POST",
+          body: form,
+        });
+      } catch (e) {
+        this.sheetError = e.message;
+      }
+    },
+
+    async saveSheet() {
+      this.sheetError = "";
+      const form = new FormData();
+      form.append("boxes_per_corrugado", this.sheetFields.boxes_per_corrugado);
+      form.append("cantidad_por_cama", this.sheetFields.cantidad_por_cama);
+      form.append("estiba", this.sheetFields.estiba);
+      if (this.sheetFields.unit_price) form.append("unit_price", this.sheetFields.unit_price);
+      if (this.sheetFields.tipo_caja) form.append("tipo_caja", this.sheetFields.tipo_caja);
+      if (this.sheetFields.dimensiones_internas) form.append("dimensiones_internas", this.sheetFields.dimensiones_internas);
+      if (this.sheetFields.peso_bruto) form.append("peso_bruto", this.sheetFields.peso_bruto);
+      if (this.sheetFile) form.append("file", this.sheetFile);
+      try {
+        await this.api(`/api/products/${this.sheetProductId}/packaging-sheet`, { method: "POST", body: form });
+        this.sheetFields = null;
+        this.sheetFile = null;
+        this.sheetProductId = "";
+        await this.loadProducts();
+      } catch (e) {
+        this.sheetError = e.message;
+      }
+    },
+
+    // --- órdenes de compra ---
+    addPOItemRow() { this.newPO.items.push({ product_id: "", quantity_boxes: "" }); },
+    removePOItemRow(i) { this.newPO.items.splice(i, 1); },
+    async createPO() {
+      const items = this.newPO.items
+        .filter((i) => i.product_id && i.quantity_boxes)
+        .map((i) => ({ product_id: Number(i.product_id), quantity_boxes: Number(i.quantity_boxes) }));
+      await this.api("/api/purchase-orders", {
+        method: "POST",
+        body: JSON.stringify({ po_number: this.newPO.po_number, client_id: this.newPO.client_id || null, items }),
+      });
+      this.newPO = { po_number: "", client_id: "", items: [{ product_id: "", quantity_boxes: "" }] };
+      await this.loadPurchaseOrders();
+    },
+
+    // --- armado visual de camión (drag & drop) ---
+    addBuildItemRow() { this.buildItems.push({ product_id: "", quantity_boxes: "" }); },
+    removeBuildItemRow(i) { this.buildItems.splice(i, 1); },
+
+    // ---- drag & drop: arrastrar un producto a la caja del camión ----
+    dragProductId: null,
+    dropHover: false,
+    onProductDragStart(e, product) {
+      if (!this.hasSheet(product)) { e.preventDefault(); return; }
+      this.dragProductId = product.id;
+      e.dataTransfer.effectAllowed = "copy";
+      e.dataTransfer.setData("text/plain", String(product.id));
+    },
+    onDeckDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; this.dropHover = true; },
+    onDeckDragLeave() { this.dropHover = false; },
+    onDeckDrop(e) {
+      e.preventDefault();
+      this.dropHover = false;
+      const id = this.dragProductId || Number(e.dataTransfer.getData("text/plain"));
+      this.dragProductId = null;
+      if (id) this.addProductToBuild(Number(id));
+    },
+    // Agrega el producto a la carga; si ya está, solo suma otra tarima de
+    // cajas (para que arrastrarlo otra vez "eche más"). Cantidad inicial =
+    // una tarima llena, editable después.
+    addProductToBuild(productId) {
+      const p = this.products.find((x) => x.id === productId);
+      if (!p || !this.hasSheet(p)) return;
+      const bpp = this.boxesPerPallet(p);
+      // limpia la fila vacía inicial si sigue ahí
+      this.buildItems = this.buildItems.filter((r) => r.product_id || r.quantity_boxes);
+      const existing = this.buildItems.find((r) => Number(r.product_id) === productId);
+      if (existing) {
+        existing.quantity_boxes = Number(existing.quantity_boxes || 0) + bpp;
+      } else {
+        this.buildItems.push({ product_id: String(productId), quantity_boxes: bpp });
+      }
+      this.packError = "";
+    },
+    // Filas con producto y cantidad válidos, ya con producto resuelto — base
+    // del cálculo en vivo del camión.
+    liveLines() {
+      const lines = [];
+      for (const row of this.buildItems) {
+        const pid = Number(row.product_id);
+        const qty = Number(row.quantity_boxes);
+        const p = this.products.find((x) => x.id === pid);
+        if (!p || !this.hasSheet(p) || !qty || qty <= 0) continue;
+        const bpp = this.boxesPerPallet(p);
+        const existing = lines.find((l) => l.product_id === pid);
+        const pallets = Math.ceil(qty / bpp);
+        if (existing) { existing.quantity_boxes += qty; existing.pallets = Math.ceil(existing.quantity_boxes / bpp); }
+        else lines.push({ product_id: pid, product_name: p.name, quantity_boxes: qty, pallets, importe: p.unit_price != null ? Math.round(p.unit_price * qty * 100) / 100 : null });
+      }
+      return lines;
+    },
+    liveTruck() {
+      return this.trucks.find((t) => t.id === Number(this.selectedTruckId)) || null;
+    },
+    liveImporteTotal() {
+      const imp = this.liveLines().map((l) => l.importe).filter((v) => v != null);
+      return imp.length ? Math.round(imp.reduce((a, b) => a + b, 0) * 100) / 100 : null;
+    },
+
+    async loadFromPO() {
+      if (!this.fromPoId) return;
+      const po = await this.api(`/api/purchase-orders/${this.fromPoId}`);
+      this.buildItems = po.items.map((i) => ({ product_id: String(i.product_id), quantity_boxes: i.quantity_boxes }));
+    },
+    itemsPayload() {
+      return this.buildItems
+        .filter((i) => i.product_id && i.quantity_boxes)
+        .map((i) => ({ product_id: Number(i.product_id), quantity_boxes: Number(i.quantity_boxes) }));
+    },
+    async computePlan() {
+      this.packError = "";
+      this.singleResult = null;
+      this.shipmentPlan = null;
+      try {
+        if (this.mode === "single") {
+          if (!this.selectedTruckId) { this.packError = "Elige un camión primero."; return; }
+          this.singleResult = await this.api("/api/pack/single-truck", {
+            method: "POST",
+            body: JSON.stringify({ truck_id: Number(this.selectedTruckId), items: this.itemsPayload() }),
+          });
+        } else {
+          this.shipmentPlan = await this.api("/api/pack/plan-shipment", {
+            method: "POST",
+            body: JSON.stringify({ items: this.itemsPayload() }),
+          });
+        }
+      } catch (e) {
+        this.packError = e.message;
+      }
+    },
+    // Guarda la carga que se armó en vivo arrastrando productos al camión.
+    async saveLiveLoad() {
+      const truck = this.liveTruck();
+      const lines = this.liveLines();
+      if (!truck || !lines.length) return;
+      this.savingLoad = true;
+      try {
+        await this.api("/api/truck-loads", {
+          method: "POST",
+          body: JSON.stringify({
+            name: `${truck.name} — ${new Date().toLocaleDateString("es-MX")}`,
+            truck_id: truck.id,
+            items: lines.map((i) => ({
+              product_id: i.product_id, quantity_boxes: i.quantity_boxes, pallets_used: i.pallets,
+            })),
+          }),
+        });
+        this.buildItems = [{ product_id: "", quantity_boxes: "" }];
+        await this.loadTruckLoads();
+        this.view = "cargas";
+      } finally {
+        this.savingLoad = false;
+      }
+    },
+    async saveShipmentPlan() {
+      this.savingLoad = true;
+      try {
+        let n = 1;
+        for (const truck of this.shipmentPlan) {
+          await this.api("/api/truck-loads", {
+            method: "POST",
+            body: JSON.stringify({
+              name: `${truck.truck_name} — camión ${n} — ${new Date().toLocaleDateString("es-MX")}`,
+              truck_id: truck.truck_id,
+              items: truck.items.map((i) => ({
+                product_id: i.product_id, quantity_boxes: i.quantity_boxes, pallets_used: i.pallets,
+              })),
+            }),
+          });
+          n++;
+        }
+        this.shipmentPlan = null;
+        this.buildItems = [{ product_id: "", quantity_boxes: "" }];
+        await this.loadTruckLoads();
+        this.view = "cargas";
+      } finally {
+        this.savingLoad = false;
+      }
+    },
+
+    // --- cargas guardadas ---
+    async setLoadStatus(loadId, status) {
+      await this.api(`/api/truck-loads/${loadId}/status`, { method: "PATCH", body: JSON.stringify({ status }) });
+      await this.loadTruckLoads();
+    },
+
+    // --- camiones (admin) ---
+    async createTruck() {
+      await this.api("/api/trucks", {
+        method: "POST",
+        body: JSON.stringify({ name: this.newTruck.name, pallet_capacity: Number(this.newTruck.pallet_capacity) }),
+      });
+      this.newTruck = { name: "", pallet_capacity: "" };
+      await this.loadTrucks();
+    },
+  };
+}
+</script>
+  <script>
+  (function () {
+    const _app = app;
+    const DEMO = {
+      session: { authenticated:true, username:"demo", display_name:"Demo Arqueta", role:"admin" },
+      clients: [],
+      trucks: [
+        { id:1, name:"Trailer 53'", pallet_capacity:26 },
+        { id:2, name:"Torton", pallet_capacity:14 },
+        { id:3, name:"Rabón", pallet_capacity:10 },
+      ],
+      products: [
+        { id:1, name:"Caja Cereal 500g", sku:"AF-CER500", boxes_per_corrugado:24, cantidad_por_cama:6, estiba:6, unit_price:9.80 },
+        { id:2, name:"Display Chocolates 24pz", sku:"AF-CHO24", boxes_per_corrugado:26, cantidad_por_cama:6, estiba:6, unit_price:18.50 },
+        { id:3, name:"Estuche Farmacéutico", sku:"AF-FAR01", boxes_per_corrugado:20, cantidad_por_cama:8, estiba:5, unit_price:12.25 },
+        { id:4, name:"Caja Snacks 10ct", sku:"AF-SNK10", boxes_per_corrugado:24, cantidad_por_cama:5, estiba:4, unit_price:7.40 },
+        { id:5, name:"Inserto Botella 700ml", sku:"AF-INS70", boxes_per_corrugado:18, cantidad_por_cama:7, estiba:5, unit_price:5.60 },
+        { id:6, name:"Producto sin ficha (demo)", sku:"AF-XX", boxes_per_corrugado:null, cantidad_por_cama:null, estiba:null, unit_price:null },
+      ],
+      purchaseOrders: [
+        { id:1, po_number:"OC-1042", created_at:new Date().toISOString(),
+          items:[ {product_id:1,quantity_boxes:6200}, {product_id:2,quantity_boxes:3600}, {product_id:4,quantity_boxes:1800} ] },
+        { id:2, po_number:"OC-1043", created_at:new Date().toISOString(),
+          items:[ {product_id:3,quantity_boxes:4000}, {product_id:5,quantity_boxes:2500} ] },
+      ],
+      truckLoads: [
+        { id:1, name:"Trailer 53' — envío lunes", truck_name:"Trailer 53'", pallet_capacity:26, status:"listo", pallets_used:24 },
+        { id:2, name:"Torton — muestra", truck_name:"Torton", pallet_capacity:14, status:"planificando", pallets_used:9 },
+      ],
+      reports: [
+        { id:1, name:"Trailer 53' — envío lunes", truck_name:"Trailer 53'", pallets_used:24, pallet_capacity:26, status:"listo" },
+        { id:2, name:"Torton — muestra", truck_name:"Torton", pallets_used:9, pallet_capacity:14, status:"planificando" },
+      ],
+    };
+    window.app = function () {
+      const o = _app();
+      o.api = async function (path, opts = {}) {
+        const m = (opts.method || "GET").toUpperCase();
+        if (path === "/api/truck-loads" && m === "POST") {
+          const body = JSON.parse(opts.body || "{}");
+          const t = DEMO.trucks.find(x => x.id === body.truck_id) || {};
+          DEMO.truckLoads.unshift({ id:Date.now(), name:body.name, truck_name:t.name, pallet_capacity:t.pallet_capacity, status:"planificando", pallets_used:(body.items||[]).reduce((n,i)=>n+(i.pallets_used||0),0) });
+          return { id:Date.now() };
+        }
+        if (path.startsWith("/api/purchase-orders/")) { return DEMO.purchaseOrders.find(p => p.id === Number(path.split("/").pop())); }
+        if (path === "/api/session") return DEMO.session;
+        if (path === "/api/products") return DEMO.products;
+        if (path === "/api/trucks") return DEMO.trucks;
+        if (path === "/api/purchase-orders") return DEMO.purchaseOrders;
+        if (path === "/api/truck-loads") return DEMO.truckLoads;
+        if (path === "/api/clients") return DEMO.clients;
+        if (path === "/api/reports/pallet-usage") return DEMO.reports;
+        if (m === "POST" || m === "PATCH") return { ok:true, id:Date.now() };
+        return {};
+      };
+      o.logout = function () { alert("Demo — aquí cerrarías sesión en la app real."); };
+      return o;
+    };
+  })();
+  </script>
+</body>
+</html>
