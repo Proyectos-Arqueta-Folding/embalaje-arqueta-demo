@@ -361,6 +361,36 @@ td.num { font-family: "JetBrains Mono", monospace; }
 
 @media (max-width: 900px) { .dnd-wrap { grid-template-columns: 1fr; } .palette { position: static; } }
 
+/* agrupación por cliente + selección múltiple */
+.client-group { margin-bottom: 2px; }
+.client-head {
+  font-family: "Fraunces", serif; font-weight: 600; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.03em; color: var(--kraft);
+  padding: 8px 2px 5px; margin-top: 8px; border-bottom: 1px solid var(--line);
+}
+.client-head:first-child { margin-top: 0; }
+.client-head.cat { cursor: pointer; font-size: 14px; margin-top: 18px; display: flex; align-items: baseline; gap: 8px; }
+.client-head.cat:hover { color: var(--ink); }
+.client-head.cat::after { content: "✎"; margin-left: 6px; opacity: 0; font-size: 12px; }
+.client-head.cat:hover::after { opacity: 0.6; }
+.prod-chip input[type="checkbox"] { width: 15px; height: 15px; flex: none; accent-color: var(--kraft); cursor: pointer; }
+.prod-chip.selected { border-color: var(--kraft); background: var(--kraft-soft); }
+
+/* catálogo editable */
+.cat-group { margin-bottom: 6px; }
+.cat-table { font-size: 12px; }
+.cat-table th { padding: 6px; font-size: 10px; }
+.cat-table td { padding: 2px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.cell-in {
+  padding: 5px 7px; border: 1px solid transparent; background: transparent;
+  border-radius: 4px; width: 100%; font-size: 12px;
+}
+.cell-in:hover { border-color: var(--line); }
+.cell-in:focus { border-color: var(--kraft); background: var(--paper-raised); box-shadow: 0 0 0 2px var(--kraft-soft); }
+.cell-in.wide { min-width: 210px; font-weight: 500; }
+.cell-in.sku { min-width: 90px; }
+.cell-in.num { width: 82px; font-family: "JetBrains Mono", monospace; }
+
 /* misc */
 .hint { font-size: 12px; color: var(--muted); }
 .pill-toggle { display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 3px; }
@@ -385,7 +415,7 @@ td.num { font-family: "JetBrains Mono", monospace; }
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body x-data="app()" x-init="init()">
-  <div style="background:#C08A3E;color:#fff;text-align:center;padding:6px;font:600 12px Inter,sans-serif;">DEMO interactiva · datos de ejemplo · arrastra los productos al camión</div>
+  <div style="background:#C08A3E;color:#fff;text-align:center;padding:6px;font:600 12px Inter,sans-serif;">DEMO interactiva &middot; datos de ejemplo &middot; arrastra o marca productos por cliente</div>
   <div class="shell">
     <nav class="sidebar">
       <div class="brand">
@@ -448,26 +478,45 @@ td.num { font-family: "JetBrains Mono", monospace; }
 
         <!-- ===== MODO SINGLE: arrastra productos al camión ===== -->
         <div class="dnd-wrap" x-show="mode === 'single'">
-          <!-- paleta de productos arrastrables -->
+          <!-- paleta de productos arrastrables, agrupada por cliente -->
           <div class="card palette">
-            <h3>Productos <span class="hint">· arrástralos al camión →</span></h3>
+            <h3>Productos</h3>
+            <label style="margin-bottom: 0.6em;">
+              Cliente
+              <select x-model="clientFilter">
+                <option value="">Todos los clientes</option>
+                <template x-for="c in clientNames()" :key="c">
+                  <option :value="c" x-text="c"></option>
+                </template>
+              </select>
+            </label>
+            <p class="hint">Arrastra al camión, o marca varios ☑ y agrégalos juntos.</p>
             <div class="prod-list">
-              <template x-for="p in products" :key="p.id">
-                <div class="prod-chip" :class="{disabled: !hasSheet(p)}"
-                     :draggable="hasSheet(p)"
-                     @dragstart="onProductDragStart($event, p)"
-                     @dblclick="addProductToBuild(p.id)"
-                     :title="hasSheet(p) ? 'Arrastra al camión (o doble clic para agregar)' : 'Este producto no tiene ficha de embalaje todavía'">
-                  <span class="legend-swatch" :style="`background:${productColor(p.id)}`"></span>
-                  <span class="pc-body">
-                    <span class="pc-name" x-text="p.name"></span>
-                    <span class="pc-meta mono" x-text="hasSheet(p) ? `${boxesPerPallet(p)} cajas / tarima` : 'sin ficha de embalaje'"></span>
-                  </span>
-                  <span class="pc-grip" x-show="hasSheet(p)">⠿</span>
+              <template x-for="grp in productsByClient(paletteProducts())" :key="grp.client">
+                <div class="client-group">
+                  <div class="client-head" x-text="grp.client"></div>
+                  <template x-for="p in grp.products" :key="p.id">
+                    <div class="prod-chip" :class="{disabled: !hasSheet(p), selected: isSelected(p.id)}"
+                         :draggable="hasSheet(p)"
+                         @dragstart="onProductDragStart($event, p)"
+                         @dblclick="addProductToBuild(p.id)"
+                         :title="hasSheet(p) ? 'Arrastra al camión (o doble clic para agregar)' : 'Este producto no tiene ficha de embalaje todavía'">
+                      <input type="checkbox" @click.stop :checked="isSelected(p.id)" @change="toggleSelect(p.id)" :disabled="!hasSheet(p)" />
+                      <span class="legend-swatch" :style="`background:${productColor(p.id)}`"></span>
+                      <span class="pc-body">
+                        <span class="pc-name" x-text="p.name"></span>
+                        <span class="pc-meta mono" x-text="hasSheet(p) ? `${boxesPerPallet(p)} cajas / tarima` : 'sin ficha de embalaje'"></span>
+                      </span>
+                      <span class="pc-grip" x-show="hasSheet(p)">⠿</span>
+                    </div>
+                  </template>
                 </div>
               </template>
               <p class="hint" x-show="!products.length">No hay productos todavía — agrégalos en Catálogo.</p>
             </div>
+            <button class="secondary" x-show="selectedForBuild.length" @click="addSelectedToBuild()" style="margin-top: 12px; width: 100%;">
+              Agregar <span x-text="selectedWithSheet()"></span> seleccionado(s) al camión
+            </button>
           </div>
 
           <!-- camión: zona de drop + relleno en vivo -->
@@ -764,25 +813,50 @@ td.num { font-family: "JetBrains Mono", monospace; }
         </div>
 
         <div class="card">
-          <table>
-            <thead><tr><th>Producto</th><th>SKU</th><th>Postetas/caja</th><th>Cant./cama</th><th>Estiba</th><th>Cajas/tarima</th><th>Precio</th></tr></thead>
-            <tbody>
-              <template x-for="p in products" :key="p.id">
-                <tr>
-                  <td>
-                    <span class="legend-swatch" :style="`background:${productColor(p.id)}; display:inline-block; vertical-align:middle; margin-right:8px;`"></span>
-                    <span x-text="p.name"></span>
-                  </td>
-                  <td x-text="p.sku || '—'"></td>
-                  <td class="num" x-text="p.boxes_per_corrugado || '—'"></td>
-                  <td class="num" x-text="p.cantidad_por_cama || '—'"></td>
-                  <td class="num" x-text="p.estiba || '—'"></td>
-                  <td class="num" x-text="boxesPerPallet(p) || '—'"></td>
-                  <td class="num" x-text="fmtMoney(p.unit_price)"></td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
+          <div class="row" style="justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0;">Productos por cliente <span class="hint" x-text="`(${products.length})`"></span></h3>
+            <div class="item-row" style="margin: 0;">
+              <input type="text" x-model="newClientName" placeholder="Nuevo cliente" @keydown.enter="createClientInline()" style="width: 170px;" />
+              <button class="secondary" @click="createClientInline()">+ Cliente</button>
+            </div>
+          </div>
+          <p class="hint" style="margin-top: 0.4em;">Todo es editable: cambia el nombre, mueve un producto a otro cliente, o captura/corrige los números de la ficha. Se guarda solo al salir de cada campo.</p>
+
+          <template x-for="grp in productsByClient()" :key="grp.client">
+            <div class="cat-group">
+              <div class="client-head cat" @click="renameClient(clients.find(c => c.name === grp.client) || {id:null, name:grp.client})">
+                <span x-text="grp.client"></span>
+                <span class="hint" x-text="`· ${grp.products.length}`"></span>
+              </div>
+              <div style="overflow-x: auto;">
+                <table class="cat-table">
+                  <thead><tr><th></th><th>Producto</th><th>SKU</th><th>Cliente</th><th>Post./caja</th><th>Cant./cama</th><th>Estiba</th><th>Cajas/tarima</th><th>Precio</th></tr></thead>
+                  <tbody>
+                    <template x-for="p in grp.products" :key="p.id">
+                      <tr>
+                        <td><span class="legend-swatch" :style="`background:${productColor(p.id)}`"></span></td>
+                        <td><input class="cell-in wide" x-model="p.name" @change="saveProductEdit(p)" /></td>
+                        <td><input class="cell-in sku" x-model="p.sku" @change="saveProductEdit(p)" placeholder="—" /></td>
+                        <td>
+                          <select class="cell-in" @change="p.client_id = $event.target.value ? Number($event.target.value) : null; saveProductEdit(p)">
+                            <option value="" :selected="!p.client_id">(sin cliente)</option>
+                            <template x-for="c in clients" :key="c.id">
+                              <option :value="c.id" :selected="c.id === p.client_id" x-text="c.name"></option>
+                            </template>
+                          </select>
+                        </td>
+                        <td><input class="cell-in num" type="number" min="1" x-model="p.boxes_per_corrugado" @change="saveSheetInline(p)" placeholder="—" /></td>
+                        <td><input class="cell-in num" type="number" min="1" x-model="p.cantidad_por_cama" @change="saveSheetInline(p)" placeholder="—" /></td>
+                        <td><input class="cell-in num" type="number" min="1" x-model="p.estiba" @change="saveSheetInline(p)" placeholder="—" /></td>
+                        <td class="num" x-text="boxesPerPallet(p) || '—'"></td>
+                        <td><input class="cell-in num" type="number" step="0.01" min="0" x-model="p.unit_price" @change="saveSheetInline(p)" placeholder="—" /></td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </template>
         </div>
       </section>
 
@@ -873,11 +947,15 @@ td.num { font-family: "JetBrains Mono", monospace; }
 
     newTruck: { name: "", pallet_capacity: "" },
 
+    // filtro/selección para agrupar y escoger varios productos por cliente
+    clientFilter: "",
+    selectedForBuild: [],
+    newClientName: "",
+
     async init() {
       await this.loadSession();
       const calls = [this.loadProducts(), this.loadTrucks(), this.loadPurchaseOrders()];
-      if (this.session.role !== "client") calls.push(this.loadTruckLoads());
-      if (this.session.role === "admin") calls.push(this.loadClients());
+      if (this.session.role !== "client") calls.push(this.loadTruckLoads(), this.loadClients());
       await Promise.all(calls);
     },
 
@@ -1105,6 +1183,81 @@ td.num { font-family: "JetBrains Mono", monospace; }
       return imp.length ? Math.round(imp.reduce((a, b) => a + b, 0) * 100) / 100 : null;
     },
 
+    // ---- agrupar / filtrar / seleccionar por cliente ----
+    clientLabel(p) { return p.client_name || "(Sin cliente)"; },
+    clientNames() {
+      return [...new Set(this.products.map((p) => this.clientLabel(p)))].sort();
+    },
+    // Productos visibles en la paleta según el filtro de cliente.
+    paletteProducts() {
+      if (!this.clientFilter) return this.products;
+      return this.products.filter((p) => this.clientLabel(p) === this.clientFilter);
+    },
+    // Productos agrupados por cliente (para el catálogo y la paleta agrupada).
+    productsByClient(list) {
+      const src = list || this.products;
+      const groups = {};
+      for (const p of src) (groups[this.clientLabel(p)] ||= []).push(p);
+      return Object.keys(groups).sort().map((client) => ({ client, products: groups[client] }));
+    },
+    isSelected(id) { return this.selectedForBuild.includes(id); },
+    toggleSelect(id) {
+      const i = this.selectedForBuild.indexOf(id);
+      if (i >= 0) this.selectedForBuild.splice(i, 1);
+      else this.selectedForBuild.push(id);
+    },
+    // Agrega al camión todos los productos seleccionados (con ficha) de un jalón.
+    addSelectedToBuild() {
+      for (const id of this.selectedForBuild) this.addProductToBuild(id);
+      this.selectedForBuild = [];
+    },
+    selectedWithSheet() {
+      return this.selectedForBuild.filter((id) => {
+        const p = this.products.find((x) => x.id === id);
+        return p && this.hasSheet(p);
+      }).length;
+    },
+
+    // ---- edición inline (todo editable) ----
+    async saveProductEdit(p) {
+      await this.api(`/api/products/${p.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          name: p.name,
+          sku: p.sku || null,
+          client_id: p.client_id ? Number(p.client_id) : null,
+        }),
+      });
+      await this.loadProducts();
+    },
+    // Edita a mano los números de la ficha desde el catálogo (sin re-subir PDF).
+    async saveSheetInline(p) {
+      if (!p.boxes_per_corrugado || !p.cantidad_por_cama || !p.estiba) return;
+      await this.api(`/api/products/${p.id}/packaging-sheet`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          boxes_per_corrugado: Number(p.boxes_per_corrugado),
+          cantidad_por_cama: Number(p.cantidad_por_cama),
+          estiba: Number(p.estiba),
+          unit_price: p.unit_price === "" ? null : p.unit_price,
+        }),
+      });
+      await this.loadProducts();
+    },
+    async createClientInline() {
+      const name = (this.newClientName || "").trim();
+      if (!name) return;
+      await this.api("/api/clients", { method: "POST", body: JSON.stringify({ name }) });
+      this.newClientName = "";
+      await this.loadClients();
+    },
+    async renameClient(client) {
+      const name = prompt("Nuevo nombre del cliente:", client.name);
+      if (!name || !name.trim() || name.trim() === client.name) return;
+      await this.api(`/api/clients/${client.id}`, { method: "PATCH", body: JSON.stringify({ name: name.trim() }) });
+      await Promise.all([this.loadClients(), this.loadProducts()]);
+    },
+
     async loadFromPO() {
       if (!this.fromPoId) return;
       const po = await this.api(`/api/purchase-orders/${this.fromPoId}`);
@@ -1209,57 +1362,63 @@ td.num { font-family: "JetBrains Mono", monospace; }
     const _app = app;
     const DEMO = {
       session: { authenticated:true, username:"demo", display_name:"Demo Arqueta", role:"admin" },
-      clients: [],
-      trucks: [
-        { id:1, name:"Trailer 53'", pallet_capacity:26 },
-        { id:2, name:"Torton", pallet_capacity:14 },
-        { id:3, name:"Rabón", pallet_capacity:10 },
-      ],
+      clients: [ {id:1,name:"BIMFASA"}, {id:2,name:"PREMIUM BEERS GROUP"}, {id:3,name:"SALUTARE"}, {id:4,name:"FRUITEX DE MEXICO"} ],
+      trucks: [ {id:1,name:"Trailer 53'",pallet_capacity:26}, {id:2,name:"Torton",pallet_capacity:14}, {id:3,name:"Rabon",pallet_capacity:10} ],
       products: [
-        { id:1, name:"Caja Cereal 500g", sku:"AF-CER500", boxes_per_corrugado:24, cantidad_por_cama:6, estiba:6, unit_price:9.80 },
-        { id:2, name:"Display Chocolates 24pz", sku:"AF-CHO24", boxes_per_corrugado:26, cantidad_por_cama:6, estiba:6, unit_price:18.50 },
-        { id:3, name:"Estuche Farmacéutico", sku:"AF-FAR01", boxes_per_corrugado:20, cantidad_por_cama:8, estiba:5, unit_price:12.25 },
-        { id:4, name:"Caja Snacks 10ct", sku:"AF-SNK10", boxes_per_corrugado:24, cantidad_por_cama:5, estiba:4, unit_price:7.40 },
-        { id:5, name:"Inserto Botella 700ml", sku:"AF-INS70", boxes_per_corrugado:18, cantidad_por_cama:7, estiba:5, unit_price:5.60 },
-        { id:6, name:"Producto sin ficha (demo)", sku:"AF-XX", boxes_per_corrugado:null, cantidad_por_cama:null, estiba:null, unit_price:null },
+        {id:1,name:"Caja Snacks 14ct",sku:"AFFP0201",client_id:1,client_name:"BIMFASA",boxes_per_corrugado:24,cantidad_por_cama:6,estiba:6,unit_price:9.8},
+        {id:2,name:"Display Tropical Snacks",sku:"AFFP0202",client_id:1,client_name:"BIMFASA",boxes_per_corrugado:26,cantidad_por_cama:6,estiba:6,unit_price:12.5},
+        {id:3,name:"6 Pack Wisky 200",sku:"AFFP0067",client_id:2,client_name:"PREMIUM BEERS GROUP",boxes_per_corrugado:20,cantidad_por_cama:8,estiba:5,unit_price:14.25},
+        {id:4,name:"Estuche Oktoberfest",sku:"AFFP0088",client_id:2,client_name:"PREMIUM BEERS GROUP",boxes_per_corrugado:18,cantidad_por_cama:7,estiba:5,unit_price:11.0},
+        {id:5,name:"Caja Materdei",sku:"AFFP0027",client_id:3,client_name:"SALUTARE",boxes_per_corrugado:24,cantidad_por_cama:5,estiba:4,unit_price:7.4},
+        {id:6,name:"Banco Materdei",sku:"AFFP0028",client_id:3,client_name:"SALUTARE",boxes_per_corrugado:null,cantidad_por_cama:null,estiba:null,unit_price:null},
+        {id:7,name:"Display Solely Gummies 10ct",sku:"AFFP0111",client_id:4,client_name:"FRUITEX DE MEXICO",boxes_per_corrugado:26,cantidad_por_cama:6,estiba:6,unit_price:18.5},
+        {id:8,name:"Display Jerky 5ct",sku:"AFFP0112",client_id:4,client_name:"FRUITEX DE MEXICO",boxes_per_corrugado:22,cantidad_por_cama:6,estiba:5,unit_price:16.9},
       ],
       purchaseOrders: [
-        { id:1, po_number:"OC-1042", created_at:new Date().toISOString(),
-          items:[ {product_id:1,quantity_boxes:6200}, {product_id:2,quantity_boxes:3600}, {product_id:4,quantity_boxes:1800} ] },
-        { id:2, po_number:"OC-1043", created_at:new Date().toISOString(),
-          items:[ {product_id:3,quantity_boxes:4000}, {product_id:5,quantity_boxes:2500} ] },
+        {id:1,po_number:"OC-1042",created_at:new Date().toISOString(),items:[{product_id:1,quantity_boxes:6200},{product_id:2,quantity_boxes:3600}]},
       ],
-      truckLoads: [
-        { id:1, name:"Trailer 53' — envío lunes", truck_name:"Trailer 53'", pallet_capacity:26, status:"listo", pallets_used:24 },
-        { id:2, name:"Torton — muestra", truck_name:"Torton", pallet_capacity:14, status:"planificando", pallets_used:9 },
-      ],
-      reports: [
-        { id:1, name:"Trailer 53' — envío lunes", truck_name:"Trailer 53'", pallets_used:24, pallet_capacity:26, status:"listo" },
-        { id:2, name:"Torton — muestra", truck_name:"Torton", pallets_used:9, pallet_capacity:14, status:"planificando" },
-      ],
+      truckLoads: [ {id:1,name:"Trailer 53' - envio lunes",truck_name:"Trailer 53'",pallet_capacity:26,status:"listo",pallets_used:22} ],
+      reports: [ {id:1,name:"Trailer 53' - envio lunes",truck_name:"Trailer 53'",pallets_used:22,pallet_capacity:26,status:"listo"} ],
+      _seq: 100,
     };
+    function syncNames(){ for(const p of DEMO.products){ const c=DEMO.clients.find(c=>c.id===Number(p.client_id)); p.client_name=c?c.name:null; } }
     window.app = function () {
       const o = _app();
       o.api = async function (path, opts = {}) {
         const m = (opts.method || "GET").toUpperCase();
-        if (path === "/api/truck-loads" && m === "POST") {
-          const body = JSON.parse(opts.body || "{}");
-          const t = DEMO.trucks.find(x => x.id === body.truck_id) || {};
-          DEMO.truckLoads.unshift({ id:Date.now(), name:body.name, truck_name:t.name, pallet_capacity:t.pallet_capacity, status:"planificando", pallets_used:(body.items||[]).reduce((n,i)=>n+(i.pallets_used||0),0) });
-          return { id:Date.now() };
+        const body = opts.body && typeof opts.body === "string" ? JSON.parse(opts.body) : null;
+        let mm;
+        if ((mm = path.match(/^\/api\/products\/(\d+)$/)) && m === "PATCH") {
+          const p = DEMO.products.find(x => x.id === Number(mm[1]));
+          if (p) { if (body.name!=null) p.name=body.name; p.sku=body.sku; p.client_id=body.client_id; syncNames(); }
+          return p;
         }
-        if (path.startsWith("/api/purchase-orders/")) { return DEMO.purchaseOrders.find(p => p.id === Number(path.split("/").pop())); }
+        if ((mm = path.match(/^\/api\/products\/(\d+)\/packaging-sheet$/)) && m === "PATCH") {
+          const p = DEMO.products.find(x => x.id === Number(mm[1]));
+          if (p) { p.boxes_per_corrugado=body.boxes_per_corrugado; p.cantidad_por_cama=body.cantidad_por_cama; p.estiba=body.estiba; p.unit_price=body.unit_price; }
+          return p;
+        }
+        if (path === "/api/clients" && m === "POST") { const c={id:++DEMO._seq,name:body.name}; DEMO.clients.push(c); return c; }
+        if ((mm = path.match(/^\/api\/clients\/(\d+)$/)) && m === "PATCH") {
+          const c = DEMO.clients.find(x => x.id === Number(mm[1])); if (c){ c.name=body.name; syncNames(); } return c;
+        }
+        if (path === "/api/truck-loads" && m === "POST") {
+          const t=DEMO.trucks.find(x=>x.id===body.truck_id)||{};
+          DEMO.truckLoads.unshift({id:++DEMO._seq,name:body.name,truck_name:t.name,pallet_capacity:t.pallet_capacity,status:"planificando",pallets_used:(body.items||[]).reduce((n,i)=>n+(i.pallets_used||0),0)});
+          return {id:DEMO._seq};
+        }
+        if (path.startsWith("/api/purchase-orders/")) return DEMO.purchaseOrders.find(p => p.id === Number(path.split("/").pop()));
         if (path === "/api/session") return DEMO.session;
-        if (path === "/api/products") return DEMO.products;
+        if (path === "/api/products") return JSON.parse(JSON.stringify(DEMO.products));
         if (path === "/api/trucks") return DEMO.trucks;
         if (path === "/api/purchase-orders") return DEMO.purchaseOrders;
         if (path === "/api/truck-loads") return DEMO.truckLoads;
         if (path === "/api/clients") return DEMO.clients;
         if (path === "/api/reports/pallet-usage") return DEMO.reports;
-        if (m === "POST" || m === "PATCH") return { ok:true, id:Date.now() };
+        if (m==="POST"||m==="PATCH") return {ok:true,id:++DEMO._seq};
         return {};
       };
-      o.logout = function () { alert("Demo — aquí cerrarías sesión en la app real."); };
+      o.logout = function () { alert("Demo - aqui cerrarias sesion en la app real."); };
       return o;
     };
   })();
