@@ -5,7 +5,7 @@ productos con ficha de embalaje, armado visual del camión por arrastrar y
 soltar, cálculo de tarimas ocupadas, destinos con tarifas y optimización de
 flete.
 
-**Entrar:** https://proyectos-arqueta-folding.github.io/embalaje-arqueta-demo/
+**Entrar:** https://proyectos-arqueta-folding.github.io/embalaje-arqueta/
 
 ## Cómo funciona
 
