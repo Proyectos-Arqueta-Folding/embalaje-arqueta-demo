@@ -347,7 +347,22 @@ td.num { font-family: "JetBrains Mono", monospace; }
 .utilization-fill { height: 100%; background: linear-gradient(90deg, var(--kraft), #5B9BD5); transition: width 0.7s ease; }
 
 /* ---------- drag & drop ---------- */
-.dnd-wrap { display: grid; grid-template-columns: 340px 1fr; gap: 22px; align-items: start; }
+.dnd-wrap { display: grid; grid-template-columns: var(--palette-w, 340px) 1fr; gap: 22px; align-items: start; }
+
+/* control de tamaño: agranda o achica el camión y las tarjetas de producto */
+.size-ctl {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  margin-bottom: 16px; padding: 9px 14px;
+  border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper-raised);
+}
+.size-ctl > label {
+  display: flex; flex-direction: row; align-items: center; gap: 9px; margin: 0;
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.size-ctl input[type="range"] { width: 132px; accent-color: var(--kraft); cursor: pointer; margin: 0; }
+.size-ctl .val { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink-soft); min-width: 42px; text-transform: none; letter-spacing: 0; }
+.size-ctl .reset { margin-left: auto; }
 .palette { position: sticky; top: 22px; }
 .prod-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .prod-chip {
@@ -442,6 +457,23 @@ tr.clickable:hover { background: var(--kraft-soft); }
 .modal-meta { display: flex; gap: 14px; align-items: center; margin: 8px 0 16px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
 .freight-summary { display: flex; gap: 28px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); flex-wrap: wrap; }
 
+/* indicador de sincronización */
+.sync-badge {
+  position: fixed; right: 14px; bottom: 14px; z-index: 90;
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 12px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--paper-raised);
+  box-shadow: var(--shadow); font-size: 12px; color: var(--ink-soft);
+}
+.sync-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex: none; }
+.sync-badge.off .dot { background: var(--gold); }
+.sync-badge.bad { border-color: var(--brick); color: var(--brick); }
+.sync-badge.bad .dot { background: var(--brick); }
+.sync-badge button {
+  all: unset; cursor: pointer; padding: 0 3px; font-size: 14px; line-height: 1; color: var(--muted);
+}
+.sync-badge button:hover { color: var(--kraft); }
+
 /* misc */
 .hint { font-size: 12px; color: var(--muted); }
 .pill-toggle { display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 3px; }
@@ -528,6 +560,21 @@ tr.clickable:hover { background: var(--kraft-soft); }
             </label>
           </div>
           <p class="error" x-show="packError" x-text="packError" style="margin-top: 0.8em;"></p>
+        </div>
+
+        <!-- tamaño de la vista: se guarda por equipo, no se comparte -->
+        <div class="size-ctl">
+          <label>
+            Tamaño de tarima
+            <input type="range" min="40" max="150" step="2" x-model.number="palletSize" @input="applySizes()" />
+            <span class="val" x-text="palletSize + ' px'"></span>
+          </label>
+          <label>
+            Ancho de tarjetas
+            <input type="range" min="240" max="560" step="10" x-model.number="paletteWidth" @input="applySizes()" />
+            <span class="val" x-text="paletteWidth + ' px'"></span>
+          </label>
+          <button class="ghost reset" @click="resetSizes()">Restablecer</button>
         </div>
 
         <!-- ===== MODO SINGLE: arrastra productos al camión ===== -->
@@ -1183,7 +1230,26 @@ tr.clickable:hover { background: var(--kraft-soft); }
     freightResult: null,
     newDestination: { name: "", cost_trailer: "", cost_torton: "", cost_camion_35: "", cost_reparto: "" },
 
+    // --- tamaño de la vista (preferencia local de cada equipo) ---
+    palletSize: 78,
+    paletteWidth: 340,
+    applySizes() {
+      const r = document.documentElement.style;
+      r.setProperty("--pallet", this.palletSize + "px");
+      r.setProperty("--palette-w", this.paletteWidth + "px");
+      try { localStorage.setItem("embalaje_ui_sizes", JSON.stringify({ p: this.palletSize, w: this.paletteWidth })); } catch (e) {}
+    },
+    resetSizes() { this.palletSize = 78; this.paletteWidth = 340; this.applySizes(); },
+    initSizes() {
+      try {
+        const s = JSON.parse(localStorage.getItem("embalaje_ui_sizes") || "null");
+        if (s) { this.palletSize = Number(s.p) || 78; this.paletteWidth = Number(s.w) || 340; }
+      } catch (e) {}
+      this.applySizes();
+    },
+
     async init() {
+      this.initSizes();
       await this.loadSession();
       const calls = [this.loadProducts(), this.loadTrucks(), this.loadPurchaseOrders(), this.loadDestinations()];
       if (this.session.role !== "client") calls.push(this.loadTruckLoads(), this.loadClients());
@@ -1707,6 +1773,123 @@ tr.clickable:hover { background: var(--kraft-soft); }
   <script>
   (function () {
     const _app = app;
+
+    /* ============================================================
+       SINCRONIZACIÓN ENTRE COMPUTADORAS (Supabase)
+       ------------------------------------------------------------
+       Pega aquí la URL y la llave anon de tu proyecto de Supabase
+       (Project Settings → API). Mientras estén vacías la app sigue
+       funcionando sola, guardando en este equipo nada más.
+
+       Antes de llenarlas, corre una vez el archivo supabase/schema.sql
+       en el SQL Editor de Supabase para crear las tablas y el catálogo.
+       ============================================================ */
+    const SUPABASE_URL = "";
+    const SUPABASE_ANON_KEY = "";
+
+    const REMOTE = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+    const SYNC_MS = 20000; // cada cuánto se refresca solo
+
+    // Llamada cruda a la API REST de Supabase (PostgREST).
+    async function sb(q, { method = "GET", body, prefer } = {}) {
+      const headers = { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY };
+      if (body) headers["Content-Type"] = "application/json";
+      if (prefer) headers["Prefer"] = prefer;
+      const r = await fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/" + q, {
+        method, headers, body: body ? JSON.stringify(body) : undefined,
+      });
+      const text = await r.text();
+      if (!r.ok) {
+        let msg = text;
+        try { msg = JSON.parse(text).message || text; } catch (e) {}
+        throw new Error(msg || "error " + r.status);
+      }
+      return text ? JSON.parse(text) : null;
+    }
+    const one = (rows) => (Array.isArray(rows) ? rows[0] || null : rows);
+    const num = (v) => (v === "" || v == null ? null : Number(v));
+
+    // Mismo contrato que el motor local, pero contra la base compartida.
+    async function remoteApi(path, opts = {}) {
+      const m = (opts.method || "GET").toUpperCase();
+      const body = opts.body && typeof opts.body === "string" ? JSON.parse(opts.body) : null;
+      let mm;
+
+      if (path === "/api/session") return { authenticated: true, username: "arqueta", display_name: "Arqueta Folding", role: "admin" };
+      if (path === "/api/purchase-orders") return [];
+      if (path.startsWith("/api/purchase-orders/")) return null;
+
+      // clientes
+      if (path === "/api/clients" && m === "GET") return sb("clients?select=id,name&order=name.asc");
+      if (path === "/api/clients" && m === "POST")
+        return one(await sb("clients", { method: "POST", body: { name: body.name }, prefer: "return=representation" }));
+      if ((mm = path.match(/^\/api\/clients\/(\d+)$/)) && m === "PATCH")
+        return one(await sb("clients?id=eq." + mm[1], { method: "PATCH", body: { name: body.name }, prefer: "return=representation" }));
+
+      // productos
+      if (path === "/api/products" && m === "GET") {
+        const rows = await sb("products?select=*,clients(name)&order=name.asc");
+        return rows.map((r) => { const { clients, ...prod } = r; return { ...prod, client_name: clients ? clients.name : null }; });
+      }
+      if (path === "/api/products" && m === "POST")
+        return one(await sb("products", { method: "POST", body: { name: body.name, sku: body.sku || null, client_id: num(body.client_id) }, prefer: "return=representation" }));
+      if ((mm = path.match(/^\/api\/products\/(\d+)$/)) && m === "PATCH")
+        return one(await sb("products?id=eq." + mm[1], { method: "PATCH", body: { name: body.name, sku: body.sku || null, client_id: num(body.client_id) }, prefer: "return=representation" }));
+      if ((mm = path.match(/^\/api\/products\/(\d+)\/packaging-sheet$/)) && m === "PATCH")
+        return one(await sb("products?id=eq." + mm[1], { method: "PATCH", body: {
+          boxes_per_corrugado: num(body.boxes_per_corrugado), cantidad_por_cama: num(body.cantidad_por_cama),
+          estiba: num(body.estiba), unit_price: num(body.unit_price),
+        }, prefer: "return=representation" }));
+
+      // camiones
+      if (path === "/api/trucks" && m === "GET") return sb("trucks?select=*&order=pallet_capacity.asc");
+      if (path === "/api/trucks" && m === "POST")
+        return one(await sb("trucks", { method: "POST", body: { name: body.name, pallet_capacity: num(body.pallet_capacity) }, prefer: "return=representation" }));
+
+      // destinos
+      if (path === "/api/destinations" && m === "GET") return sb("destinations?select=*&order=name.asc");
+      if (path === "/api/destinations" && m === "POST")
+        return one(await sb("destinations", { method: "POST", body: {
+          name: body.name, cost_trailer: num(body.cost_trailer), cost_torton: num(body.cost_torton),
+          cost_camion_35: num(body.cost_camion_35), cost_reparto: num(body.cost_reparto),
+        }, prefer: "return=representation" }));
+      if ((mm = path.match(/^\/api\/destinations\/(\d+)$/)) && m === "PATCH")
+        return one(await sb("destinations?id=eq." + mm[1], { method: "PATCH", body: {
+          name: body.name, cost_trailer: num(body.cost_trailer), cost_torton: num(body.cost_torton),
+          cost_camion_35: num(body.cost_camion_35), cost_reparto: num(body.cost_reparto),
+        }, prefer: "return=representation" }));
+
+      // cargas
+      if (path === "/api/truck-loads" && m === "GET") return sb("truck_loads?select=*&order=created_at.desc");
+      if (path === "/api/truck-loads" && m === "POST") {
+        const t = (this.trucks || []).find((x) => x.id === body.truck_id) || {};
+        const dest = (this.destinations || []).find((x) => x.id === Number(body.destination_id));
+        const items = (body.items || []).map((i) => {
+          const prod = (this.products || []).find((x) => x.id === i.product_id) || {};
+          return { product_id: i.product_id, product_name: prod.name || "#" + i.product_id, quantity_boxes: i.quantity_boxes, pallets_used: i.pallets_used };
+        });
+        const row = {
+          name: body.name, truck_id: t.id != null ? t.id : null, truck_name: t.name || null,
+          pallet_capacity: t.pallet_capacity != null ? t.pallet_capacity : null, status: "planificando",
+          pallets_used: items.reduce((n, i) => n + (i.pallets_used || 0), 0),
+          destination_id: body.destination_id || null, destination_name: dest ? dest.name : null,
+          freight_cost: body.freight_cost != null ? body.freight_cost : null, items,
+        };
+        const saved = one(await sb("truck_loads", { method: "POST", body: row, prefer: "return=representation" }));
+        return { id: saved ? saved.id : null };
+      }
+      if ((mm = path.match(/^\/api\/truck-loads\/(\d+)\/status$/)) && m === "PATCH")
+        return one(await sb("truck_loads?id=eq." + mm[1], { method: "PATCH", body: { status: body.status }, prefer: "return=representation" })) || {};
+      if ((mm = path.match(/^\/api\/truck-loads\/(\d+)$/)) && m === "GET")
+        return one(await sb("truck_loads?select=*&id=eq." + mm[1]));
+
+      if (path === "/api/reports/pallet-usage")
+        return sb("truck_loads?select=id,name,truck_name,pallets_used,pallet_capacity,status&order=created_at.desc");
+
+      if (m === "POST" || m === "PATCH") return { ok: true };
+      return {};
+    }
+
     // Motor de datos local: la app corre 100% en el navegador. Los cambios
     // (cargas guardadas, ediciones de catálogo, destinos) se guardan en
     // localStorage, así persisten aunque recargues o cierres la página.
@@ -1730,7 +1913,7 @@ tr.clickable:hover { background: var(--kraft-soft); }
     function syncNames(){ for(const p of STORE.products){ const c=STORE.clients.find(c=>c.id===Number(p.client_id)); p.client_name=c?c.name:null; } }
     window.app = function () {
       const o = _app();
-      o.api = async function (path, opts = {}) {
+      const localApi = async function (path, opts = {}) {
         const m = (opts.method || "GET").toUpperCase();
         const body = opts.body && typeof opts.body === "string" ? JSON.parse(opts.body) : null;
         let mm;
@@ -1788,10 +1971,67 @@ tr.clickable:hover { background: var(--kraft-soft); }
         if (m==="POST"||m==="PATCH") return {ok:true,id:++STORE._seq};
         return {};
       };
+
+      // --- estado del indicador de sincronización ---
+      o.syncMode = REMOTE ? "remote" : "local";
+      o.syncAt = "";
+      o.syncError = "";
+      o.syncBusy = false;
+
+      o.api = async function (path, opts = {}) {
+        if (!REMOTE) return localApi.call(this, path, opts);
+        try {
+          const r = await remoteApi.call(this, path, opts);
+          if (this.syncError) this.syncError = "";
+          return r;
+        } catch (e) {
+          this.syncError = e.message || String(e);
+          throw e;
+        }
+      };
+
+      // Vuelve a leer todo lo compartido: así aparece lo que guardó otra
+      // computadora sin tener que recargar la página.
+      o.refreshShared = async function () {
+        if (!REMOTE || this.syncBusy) return;
+        this.syncBusy = true;
+        try {
+          const calls = [this.loadProducts(), this.loadTrucks(), this.loadDestinations()];
+          if (this.session.role !== "client") calls.push(this.loadTruckLoads(), this.loadClients());
+          await Promise.all(calls);
+          if (this.view === "reportes") await this.loadReport();
+          this.syncAt = new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+          this.syncError = "";
+        } catch (e) {
+          this.syncError = e.message || String(e);
+        } finally {
+          this.syncBusy = false;
+        }
+      };
+
+      const _init = o.init;
+      o.init = async function () {
+        await _init.call(this);
+        if (!REMOTE) return;
+        this.syncAt = new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+        const self = this;
+        const tick = () => { if (!document.hidden && !self.savingLoad) self.refreshShared(); };
+        setInterval(tick, SYNC_MS);
+        document.addEventListener("visibilitychange", () => { if (!document.hidden) tick(); });
+      };
+
       o.logout = function () { if (confirm("¿Cerrar sesión?")) location.reload(); };
       return o;
     };
   })();
   </script>
+  <div class="sync-badge" x-cloak :class="{ off: syncMode === 'local', bad: !!syncError }">
+    <span class="dot"></span>
+    <span x-show="syncMode === 'local' && !syncError">Modo local · solo este equipo</span>
+    <span x-show="syncMode === 'remote' && !syncError"
+          x-text="syncBusy ? 'Sincronizando…' : (syncAt ? 'Sincronizado ' + syncAt : 'Sincronizado')"></span>
+    <span x-show="!!syncError" x-text="'Sin conexión — ' + syncError"></span>
+    <button x-show="syncMode === 'remote'" @click="refreshShared()" title="Actualizar ahora">⟳</button>
+  </div>
 </body>
 </html>
